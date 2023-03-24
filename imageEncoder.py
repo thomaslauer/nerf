@@ -24,24 +24,19 @@ class Network(nn.Module):
     def __init__(self):
         super(Network, self).__init__()
 
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.conv3 = nn.Conv2d(16, 32, 5)
+        # define a u-net shaped model which compresses from a 3x64x64 to a 1x128 hidden layer through conv2d layers
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, 3, padding=1)
+        self.conv3 = nn.Conv2d(64, 128, 3, padding=1)
 
-        self.linear1 = nn.Linear(512, 256)
-        self.linear2 = nn.Linear(256, 128)
-        self.linear3 = nn.Linear(128, 10)
 
     def forward(self, x):
-        x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
-        x = F.max_pool2d(F.relu(self.conv2(x)), (2, 2))
-        x = F.max_pool2d(F.relu(self.conv3(x)), (2, 2))
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
 
-        x = torch.flatten(x, 1)
-
-        x = F.relu(self.linear1(x))
-        x = F.relu(self.linear2(x))
-        x = self.linear3(x)
+        # x = F.relu(self.conv4(x))
+        # x = F.relu(self.conv5(x))
 
         return x
 
@@ -54,9 +49,10 @@ features, labels = next(iter(dataloader))
 print(features.shape)
 print(labels)
 
-print(net.forward(features))
+print(net.forward(features).shape)
 
 
+"""
 batch_size = 8
 num_epochs = 10
 
@@ -78,3 +74,4 @@ for epoch in range(num_epochs):
         # 4. logging
         print(f'epoch: {epoch}, batch_idx: {batch_idx}, loss: {loss.item()}')
 
+"""
