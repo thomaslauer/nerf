@@ -12,6 +12,7 @@ opencv-python = "*"
 openexr = "*"
 imageio = "*"
 pillow = "*"
+tqdm = "*"
 
 [dev-packages]
 
